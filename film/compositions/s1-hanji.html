@@ -1,0 +1,204 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Nanum Brush";
+      src: url("assets/fonts/NanumBrush.ttf");
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    #s1-stage,
+    #s1-tear,
+    #s1-sheet,
+    #s1-rim {
+      position: absolute;
+      inset: 0;
+    }
+    #s1-rim {
+      background: #faf8f2;
+      clip-path: path("M0 0Z");
+    }
+    #s1-cam {
+      position: absolute;
+      inset: 0;
+      transform-origin: 0 0;
+    }
+    #s1-cam .paper {
+      position: absolute;
+      left: -10%;
+      top: -10%;
+      width: 120%;
+      height: 120%;
+      background: #ece9e1 url("assets/paper/hanji.jpg") center / cover;
+    }
+    .s1-line {
+      position: absolute;
+      font-family: "Nanum Brush";
+      color: #1e1c19;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .s1-line .ch {
+      display: inline-block;
+    }
+    #s1-l1 {
+      left: 230px;
+      top: 120px;
+      font-size: 230px;
+    }
+    #s1-l2 {
+      left: 230px;
+      top: 360px;
+      font-size: 200px;
+    }
+    #s1-l3 {
+      left: 820px;
+      top: 540px;
+      font-size: 480px;
+    }
+  </style>
+  <div data-hf-id="hf-m1gw" id="root" data-composition-id="s1-hanji" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-of0r" id="s1-stage" class="clip" data-start="0" data-duration="9.9" data-track-index="0">
+      <div data-hf-id="hf-nacq" id="s1-tear">
+        <div data-hf-id="hf-1cq3" id="s1-sheet">
+          <div data-hf-id="hf-d2kf" id="s1-cam">
+            <div data-hf-id="hf-2ava" class="paper"></div>
+            <div data-hf-id="hf-q92z" id="s1-l1" class="s1-line"><span data-hf-id="hf-a1u0" class="ch">시</span><span data-hf-id="hf-4dv4" class="ch">월</span><span data-hf-id="hf-sbi0" class="ch">,</span></div>
+            <div data-hf-id="hf-fdlc" id="s1-l2" class="s1-line"><span data-hf-id="hf-2idc" class="ch">아</span><span data-hf-id="hf-a768" class="ch">무</span> <span data-hf-id="hf-xly0" class="ch">소</span><span data-hf-id="hf-0q0o" class="ch">리</span><span data-hf-id="hf-jxts" class="ch">도</span> <span data-hf-id="hf-gkyu" class="ch">없</span><span data-hf-id="hf-lxps" class="ch">는</span></div>
+            <div data-hf-id="hf-g595" id="s1-l3" class="s1-line"><span data-hf-id="hf-3100" id="s1-key" class="ch">아</span><span data-hf-id="hf-s0xw" class="ch">침</span></div>
+          </div>
+        </div>
+        <div data-hf-id="hf-e0hu" id="s1-rim"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      // Beat grid (SPEC.md): 128 BPM.
+      const BEAT = 60 / 128;
+      const T = 20 * BEAT; // tear 1 gives at 9.375
+      // ㅇ counter of #s1-key in frame px at scale 1, and its inner diameter (measured, see SPEC QA).
+      const P = { x: 881, y: 792 };
+      const COUNTER = 84;
+
+      /* ---- radial tear (closed form, seeded; technique after the registry's torn-paper-rip) ---- */
+      function tearKit(prefix, T, seed) {
+        const sheet = document.getElementById(prefix + "-sheet");
+        const rim = document.getElementById(prefix + "-rim");
+        const tear = document.getElementById(prefix + "-tear");
+        let st = seed >>> 0;
+        const rand = () => (st = (Math.imul(1664525, st) + 1013904223) >>> 0) / 4294967296;
+        const K = 12;
+        const knots = Array.from({ length: K }, () => rand() * 2 - 1);
+        const wander = (a) => {
+          const f = (a / (2 * Math.PI)) * K, i = Math.floor(f) % K, u = f - Math.floor(f), s = u * u * (3 - 2 * u);
+          return knots[i] + (knots[(i + 1) % K] - knots[i]) * s;
+        };
+        const spikes = Array.from({ length: 7 }, () => ({ a: rand() * Math.PI * 2, w: 0.05 + rand() * 0.07, h: 0.25 + rand() * 0.45 }));
+        const V = 180, table = [];
+        for (let v = 0; v < V; v++) {
+          const a = (v / V) * Math.PI * 2;
+          let sp = 0;
+          for (const s of spikes) {
+            const d = Math.abs(((a - s.a + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
+            sp += s.h * Math.exp(-((d / s.w) ** 2));
+          }
+          table.push({ a, k: 1 + 0.13 * wander(a) + sp, fib: rand() * 2 - 1, rim: 10 + rand() * 12 });
+        }
+        const FULL = "M0 0H1920V1080H0Z";
+        const ring = (R, extra) => {
+          let d = "";
+          for (let v = 0; v < V; v++) {
+            const e = table[v];
+            const r = Math.max(0, R * e.k + e.fib * Math.min(6, R * 0.05) + extra * e.rim);
+            d += (v ? "L" : "M") + (960 + Math.cos(e.a) * r).toFixed(1) + " " + (540 + Math.sin(e.a) * r).toFixed(1);
+          }
+          return d + "Z";
+        };
+        // Resist for 0.40 s (to 230 px), then give: power3.out to past the corners by T + 0.42.
+        const radius = (t) => {
+          const p = (t - (T - 0.4)) / 0.82, pr = 0.4 / 0.82;
+          if (p <= 0) return 0;
+          if (p >= 1) return 1700;
+          if (p < pr) return 230 * (p / pr) ** 2;
+          const q = (p - pr) / (1 - pr);
+          return 230 + 1470 * (1 - (1 - q) ** 3);
+        };
+        return function paint(t) {
+          const R = radius(t);
+          if (R <= 0) {
+            sheet.style.clipPath = "none";
+            rim.style.clipPath = 'path("M0 0Z")';
+            tear.style.filter = "none";
+            tear.style.opacity = "1";
+            return;
+          }
+          if (R >= 1700) {
+            tear.style.opacity = "0";
+            return;
+          }
+          const hole = ring(R, 0);
+          tear.style.opacity = "1";
+          sheet.style.clipPath = 'path(evenodd, "' + FULL + " " + hole + '")';
+          rim.style.clipPath = 'path(evenodd, "' + ring(R, 1) + " " + hole + '")';
+          tear.style.filter = "drop-shadow(0 10px 26px rgba(0,0,0,0.32))";
+        };
+      }
+
+      /* ---- camera: log-scale push into P, ㅇ filling 70% of the height as the tear starts ---- */
+      function camKit(cam, P, counter, push0, T, arrive0) {
+        const pushEnd = T + 0.42, tA = T - 0.4;
+        const uA = (tA - push0) / (pushEnd - push0);
+        const lnMax = Math.log((0.7 * 1080) / counter) / (uA * uA);
+        const clamp = (v) => Math.max(0, Math.min(1, v));
+        return function paint(t) {
+          const u = clamp((t - push0) / (pushEnd - push0));
+          const s = Math.exp(lnMax * u * u);
+          const qv = clamp(u / 0.55), q = qv * qv * (3 - 2 * qv);
+          const px = P.x + (960 - P.x) * q, py = P.y + (540 - P.y) * q;
+          // Arrival through the previous hole: 0.83 → 1 about the frame centre, expo.out over 0.9 s.
+          let a = 1;
+          if (arrive0 !== null) {
+            const v = clamp((t - arrive0) / 0.9);
+            a = 0.83 + 0.17 * (v >= 1 ? 1 : 1 - Math.pow(2, -10 * v));
+          }
+          const tx = 960 * (1 - a) + a * (px - s * P.x);
+          const ty = 540 * (1 - a) + a * (py - s * P.y);
+          cam.style.transform = "translate(" + tx.toFixed(2) + "px," + ty.toFixed(2) + "px) scale(" + (a * s).toFixed(5) + ")";
+        };
+      }
+
+      const paintTear = tearKit("s1", T, 0x1031a7);
+      const paintCam = camKit(document.getElementById("s1-cam"), P, COUNTER, 14 * BEAT, T, null);
+
+      const tl = gsap.timeline({
+        paused: true,
+        onUpdate() {
+          paintCam(this.time());
+          paintTear(this.time());
+        },
+      });
+
+      // Brush: each character wiped left → right, 0.34 s, 0.18 s apart (matches the score's strokes).
+      const WIPE_FROM = "inset(-20% 100% -20% -20%)", WIPE_TO = "inset(-20% -20% -20% -20%)";
+      const lines = [
+        ["#s1-l1", 0],
+        ["#s1-l2", 4 * BEAT],
+        ["#s1-l3", 9 * BEAT],
+      ];
+      for (const [sel, t0] of lines) {
+        document.querySelectorAll(sel + " .ch").forEach((el, i) => {
+          // Frame 0 already shows the first stroke under way.
+          const from = sel === "#s1-l1" && i === 0 ? "inset(-20% 55% -20% -20%)" : WIPE_FROM;
+          tl.fromTo(el, { clipPath: from }, { clipPath: WIPE_TO, duration: 0.34, ease: "power1.inOut" }, t0 + i * 0.18);
+        });
+      }
+      tl.to({}, { duration: 9.9 }, 0);
+      paintCam(0);
+      paintTear(0);
+      window.__timelines["s1-hanji"] = tl;
+    })();
+  </script>
+</template>

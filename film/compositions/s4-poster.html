@@ -1,0 +1,172 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Pretendard Black";
+      src: url("assets/fonts/Pretendard-Black.otf");
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      --orange: #ff4f1a;
+      --pink: #ff2d7a;
+      --ink: #0f0f0f;
+    }
+    #s4-stage {
+      position: absolute;
+      inset: 0;
+    }
+    #s4-cam {
+      position: absolute;
+      inset: 0;
+      transform-origin: 0 0;
+      font-family: "Pretendard Black";
+    }
+    #s4-ground {
+      position: absolute;
+      left: -15%;
+      top: -15%;
+      width: 130%;
+      height: 130%;
+      background: var(--orange);
+    }
+    #s4-grain {
+      position: absolute;
+      left: -15%;
+      top: -15%;
+      width: 130%;
+      height: 130%;
+      background: url("assets/paper/poster-grain.jpg") center / cover;
+      mix-blend-mode: overlay;
+      opacity: 0.45;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .s4-word {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .s4-word .bg {
+      position: absolute;
+      inset: 0;
+    }
+    .s4-word .txt {
+      position: relative;
+      line-height: 1;
+      white-space: nowrap;
+      letter-spacing: -0.04em;
+    }
+    #s4-w1 { justify-content: flex-start; padding-left: 170px; }
+    #s4-w1 .bg { background: var(--orange); }
+    #s4-w1 .txt { font-size: 860px; color: var(--ink); transform-origin: 0% 100%; }
+    #s4-w2 { justify-content: flex-end; padding-right: 170px; }
+    #s4-w2 .bg { background: var(--ink); }
+    #s4-w2 .txt { font-size: 860px; color: var(--orange); transform-origin: 100% 0%; }
+    #s4-w3 { justify-content: center; }
+    #s4-w3 .bg { background: var(--pink); }
+    #s4-w3 .txt { font-size: 860px; color: var(--ink); transform-origin: 50% 50%; }
+    #s4-w4 { justify-content: flex-start; padding-left: 190px; }
+    #s4-w4 .bg { background: var(--orange); }
+    #s4-w4 .txt { font-size: 500px; color: var(--ink); transform-origin: 0% 50%; }
+    #s4-w5 { justify-content: flex-end; padding-right: 180px; }
+    #s4-w5 .bg { background: var(--ink); }
+    #s4-w5 .txt { font-size: 700px; color: transparent; -webkit-text-stroke: 12px var(--pink); transform-origin: 100% 50%; }
+    #s4-w6 .bg { background: var(--ink); }
+    #s4-end { justify-content: flex-start; padding-left: 200px; }
+    #s4-end .bg { background: var(--orange); }
+    #s4-end .txt { font-size: 176px; color: var(--ink); letter-spacing: -0.03em; }
+    #s4-end .txt .w { display: inline-block; }
+  </style>
+  <div data-hf-id="hf-sfwg"
+    id="root"
+    data-composition-id="s4-poster"
+    data-width="1920"
+    data-height="1080"
+    data-composition-variables='[{"id":"closing","type":"string","label":"마지막 줄","default":"시월, 다시 깨어나다","maxLength":14}]'
+  >
+    <div data-hf-id="hf-92bo" id="s4-stage" class="clip" data-start="0" data-duration="10.1" data-track-index="0">
+      <div data-hf-id="hf-y75u" id="s4-cam">
+        <div data-hf-id="hf-xqe8" id="s4-ground"></div>
+        <!-- One word per two beats (global beats 44–56); each odd beat is a hard punch-in. -->
+        <div data-hf-id="hf-9y3c" id="s4-w1" class="s4-word clip" data-start="0.725" data-duration="0.9375" data-track-index="1" data-layout-allow-overflow><div data-hf-id="hf-m7dd" class="bg"></div><span data-hf-id="hf-w519" class="txt">깨</span></div>
+        <div data-hf-id="hf-s0rx" id="s4-w2" class="s4-word clip" data-start="1.6625" data-duration="0.9375" data-track-index="1" data-layout-allow-overflow><div data-hf-id="hf-ws3p" class="bg"></div><span data-hf-id="hf-bnrd" class="txt">어</span></div>
+        <div data-hf-id="hf-mk7e" id="s4-w3" class="s4-word clip" data-start="2.6" data-duration="0.9375" data-track-index="1" data-layout-allow-overflow><div data-hf-id="hf-xz0s" class="bg"></div><span data-hf-id="hf-qbnx" class="txt">나</span></div>
+        <div data-hf-id="hf-xc96" id="s4-w4" class="s4-word clip" data-start="3.5375" data-duration="0.9375" data-track-index="1" data-layout-allow-overflow><div data-hf-id="hf-xkpr" class="bg"></div><span data-hf-id="hf-9a4p" class="txt">깨어나</span></div>
+        <div data-hf-id="hf-02pw" id="s4-w5" class="s4-word clip" data-start="4.475" data-duration="1.40625" data-track-index="1" data-layout-allow-overflow><div data-hf-id="hf-yrmu" class="bg"></div><span data-hf-id="hf-okb3" class="txt">시월</span></div>
+        <div data-hf-id="hf-8p8d" id="s4-w6" class="s4-word clip" data-start="5.88125" data-duration="0.46875" data-track-index="1"><div data-hf-id="hf-ydbt" class="bg"></div></div>
+        <div data-hf-id="hf-vuuf" id="s4-end" class="s4-word clip" data-start="6.35" data-duration="3.75" data-track-index="1"><div data-hf-id="hf-zk8w" class="bg"></div><span data-hf-id="hf-w02m" id="s4-closing" class="txt">시월, 다시 깨어나다</span></div>
+        <div data-hf-id="hf-uey3" id="s4-grain" data-layout-ignore></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const BEAT = 60 / 128;
+      const OFFSET = 19.9;
+      const L = (beats) => beats * BEAT - OFFSET;
+      const cam = document.getElementById("s4-cam");
+
+      // The closing line is a variable; split it into words once, at build time.
+      const vars = window.__hyperframes && window.__hyperframes.getVariables ? window.__hyperframes.getVariables() : {};
+      const closing = typeof vars.closing === "string" && vars.closing.trim() ? vars.closing.trim() : "시월, 다시 깨어나다";
+      const closingEl = document.getElementById("s4-closing");
+      closingEl.textContent = "";
+      closing.split(/\s+/).forEach((word, i) => {
+        if (i) closingEl.appendChild(document.createTextNode(" "));
+        const s = document.createElement("span");
+        s.className = "w";
+        s.textContent = word;
+        closingEl.appendChild(s);
+      });
+
+      // Arrival through tear 3 (opens at global 20.225): 0.83 → 1 about the centre, expo.out 0.9 s.
+      const arrive0 = L(44) - 0.4;
+      function paintCam(t) {
+        const v = Math.max(0, Math.min(1, (t - arrive0) / 0.9));
+        const a = 0.83 + 0.17 * (v >= 1 ? 1 : 1 - Math.pow(2, -10 * v));
+        cam.style.transform = "translate(" + (960 * (1 - a)).toFixed(2) + "px," + (540 * (1 - a)).toFixed(2) + "px) scale(" + a.toFixed(5) + ")";
+      }
+
+      const tl = gsap.timeline({
+        paused: true,
+        onUpdate() {
+          paintCam(this.time());
+        },
+      });
+
+      // Slam: 1.25 → 1 in 0.14 s expo.out, then still until the next cut.
+      const slam = (sel, t0, from = 1.25) => tl.fromTo(sel, { scale: from }, { scale: 1, duration: 0.14, ease: "expo.out" }, t0);
+      // Punch-in on the odd beat: a hard re-frame plus a colour swap of ground and ink.
+      const punch = (id, t0, scale, bg, ink, stroke) => {
+        tl.set("#" + id + " .txt", { scale }, t0);
+        tl.set("#" + id + " .bg", { backgroundColor: bg }, t0);
+        tl.set("#" + id + " .txt", stroke ? { color: ink, webkitTextStroke: "0px " + ink } : { color: ink }, t0);
+      };
+
+      slam("#s4-w1 .txt", L(44));
+      punch("s4-w1", L(45), 1.55, "#0f0f0f", "#ff4f1a");
+      slam("#s4-w2 .txt", L(46));
+      punch("s4-w2", L(47), 1.6, "#ff2d7a", "#0f0f0f");
+      slam("#s4-w3 .txt", L(48), 1.4);
+      punch("s4-w3", L(49), 2.3, "#ff4f1a", "#0f0f0f");
+      slam("#s4-w4 .txt", L(50));
+      punch("s4-w4", L(51), 1.18, "#0f0f0f", "#ff4f1a");
+      slam("#s4-w5 .txt", L(52), 1.15);
+      // Beat 53 fills the outline; beat 54 flips to pink.
+      tl.set("#s4-w5 .txt", { color: "#ff2d7a" }, L(53));
+      punch("s4-w5", L(54), 1.0, "#ff2d7a", "#0f0f0f", true);
+
+      // Closing line: per word blur-in, 0.13 s, 0.067 s apart, then dead still to 30.0.
+      document.querySelectorAll("#s4-closing .w").forEach((el, i) => {
+        tl.fromTo(el, { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, ease: "power2.out" }, L(56) + i * 0.067);
+      });
+
+      tl.to({}, { duration: 10.1 }, 0);
+      paintCam(0);
+      window.__timelines["s4-poster"] = tl;
+    })();
+  </script>
+</template>

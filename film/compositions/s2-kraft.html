@@ -1,0 +1,205 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Nanum Pen";
+      src: url("assets/fonts/NanumPen.ttf");
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    #s2-stage,
+    #s2-tear,
+    #s2-sheet,
+    #s2-rim {
+      position: absolute;
+      inset: 0;
+    }
+    #s2-rim {
+      background: #e3cfa8;
+      clip-path: path("M0 0Z");
+    }
+    #s2-cam {
+      position: absolute;
+      inset: 0;
+      transform-origin: 0 0;
+    }
+    #s2-cam .paper {
+      position: absolute;
+      left: -15%;
+      top: -15%;
+      width: 130%;
+      height: 130%;
+      background: #b4875a url("assets/paper/kraft.jpg") center / cover;
+    }
+    .s2-line {
+      position: absolute;
+      font-family: "Nanum Pen";
+      color: #1b2240;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .s2-line .ch {
+      display: inline-block;
+    }
+    #s2-l1 {
+      left: 260px;
+      top: 280px;
+      font-size: 440px;
+    }
+    #s2-memo {
+      left: 1440px;
+      top: 150px;
+      font-size: 150px;
+      transform-origin: 0 100%;
+      rotate: -9deg;
+    }
+    #s2-underline {
+      position: absolute;
+      left: 700px;
+      top: 700px;
+      width: 560px;
+      height: 60px;
+      overflow: visible;
+    }
+  </style>
+  <div data-hf-id="hf-bq19" id="root" data-composition-id="s2-kraft" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-68ka" id="s2-stage" class="clip" data-start="0" data-duration="6.8" data-track-index="0">
+      <div data-hf-id="hf-psmr" id="s2-tear">
+        <div data-hf-id="hf-02e0" id="s2-sheet">
+          <div data-hf-id="hf-69oc" id="s2-cam">
+            <div data-hf-id="hf-2ava" class="paper"></div>
+            <div data-hf-id="hf-ri7t" id="s2-l1" class="s2-line"><span data-hf-id="hf-9zec" class="ch">그</span> <span data-hf-id="hf-hb58" class="ch">고</span><span data-hf-id="hf-0lv5" id="s2-key" class="ch">요</span><span data-hf-id="hf-0vjc" class="ch">를</span></div>
+            <svg data-hf-id="hf-ib62" id="s2-underline" viewBox="0 0 1100 90" preserveAspectRatio="none">
+              <path data-hf-id="hf-tdn3" id="s2-ul-path" d="M8 52 C 180 30, 420 70, 640 44 S 980 30, 1092 58" fill="none" stroke="#1b2240" stroke-width="13" stroke-linecap="round" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110" />
+            </svg>
+            <div data-hf-id="hf-s7te" id="s2-memo" class="s2-line"><span data-hf-id="hf-d7xd" class="ch">쉿</span></div>
+          </div>
+        </div>
+        <div data-hf-id="hf-2fgh" id="s2-rim"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const BEAT = 60 / 128;
+      const OFFSET = 8.7; // this scene's host starts at 8.7 s
+      const L = (beats) => beats * BEAT - OFFSET; // global beat → local seconds
+      const T = L(32); // tear 2 gives at 15.0
+      const P = { x: 850, y: 404 };
+      const COUNTER = 45;
+
+      function tearKit(prefix, T, seed) {
+        const sheet = document.getElementById(prefix + "-sheet");
+        const rim = document.getElementById(prefix + "-rim");
+        const tear = document.getElementById(prefix + "-tear");
+        let st = seed >>> 0;
+        const rand = () => (st = (Math.imul(1664525, st) + 1013904223) >>> 0) / 4294967296;
+        const K = 12;
+        const knots = Array.from({ length: K }, () => rand() * 2 - 1);
+        const wander = (a) => {
+          const f = (a / (2 * Math.PI)) * K, i = Math.floor(f) % K, u = f - Math.floor(f), s = u * u * (3 - 2 * u);
+          return knots[i] + (knots[(i + 1) % K] - knots[i]) * s;
+        };
+        const spikes = Array.from({ length: 7 }, () => ({ a: rand() * Math.PI * 2, w: 0.05 + rand() * 0.07, h: 0.25 + rand() * 0.45 }));
+        const V = 180, table = [];
+        for (let v = 0; v < V; v++) {
+          const a = (v / V) * Math.PI * 2;
+          let sp = 0;
+          for (const s of spikes) {
+            const d = Math.abs(((a - s.a + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
+            sp += s.h * Math.exp(-((d / s.w) ** 2));
+          }
+          table.push({ a, k: 1 + 0.13 * wander(a) + sp, fib: rand() * 2 - 1, rim: 10 + rand() * 12 });
+        }
+        const FULL = "M0 0H1920V1080H0Z";
+        const ring = (R, extra) => {
+          let d = "";
+          for (let v = 0; v < V; v++) {
+            const e = table[v];
+            const r = Math.max(0, R * e.k + e.fib * Math.min(6, R * 0.05) + extra * e.rim);
+            d += (v ? "L" : "M") + (960 + Math.cos(e.a) * r).toFixed(1) + " " + (540 + Math.sin(e.a) * r).toFixed(1);
+          }
+          return d + "Z";
+        };
+        const radius = (t) => {
+          const p = (t - (T - 0.4)) / 0.82, pr = 0.4 / 0.82;
+          if (p <= 0) return 0;
+          if (p >= 1) return 1700;
+          if (p < pr) return 230 * (p / pr) ** 2;
+          const q = (p - pr) / (1 - pr);
+          return 230 + 1470 * (1 - (1 - q) ** 3);
+        };
+        return function paint(t) {
+          const R = radius(t);
+          if (R <= 0) {
+            sheet.style.clipPath = "none";
+            rim.style.clipPath = 'path("M0 0Z")';
+            tear.style.filter = "none";
+            tear.style.opacity = "1";
+            return;
+          }
+          if (R >= 1700) {
+            tear.style.opacity = "0";
+            return;
+          }
+          const hole = ring(R, 0);
+          tear.style.opacity = "1";
+          sheet.style.clipPath = 'path(evenodd, "' + FULL + " " + hole + '")';
+          rim.style.clipPath = 'path(evenodd, "' + ring(R, 1) + " " + hole + '")';
+          tear.style.filter = "drop-shadow(0 10px 26px rgba(0,0,0,0.32))";
+        };
+      }
+
+      function camKit(cam, P, counter, push0, T, arrive0) {
+        const pushEnd = T + 0.42, tA = T - 0.4;
+        const uA = (tA - push0) / (pushEnd - push0);
+        const lnMax = Math.log((0.7 * 1080) / counter) / (uA * uA);
+        const clamp = (v) => Math.max(0, Math.min(1, v));
+        return function paint(t) {
+          const u = clamp((t - push0) / (pushEnd - push0));
+          const s = Math.exp(lnMax * u * u);
+          const qv = clamp(u / 0.55), q = qv * qv * (3 - 2 * qv);
+          const px = P.x + (960 - P.x) * q, py = P.y + (540 - P.y) * q;
+          let a = 1;
+          if (arrive0 !== null) {
+            const v = clamp((t - arrive0) / 0.9);
+            a = 0.83 + 0.17 * (v >= 1 ? 1 : 1 - Math.pow(2, -10 * v));
+          }
+          const tx = 960 * (1 - a) + a * (px - s * P.x);
+          const ty = 540 * (1 - a) + a * (py - s * P.y);
+          cam.style.transform = "translate(" + tx.toFixed(2) + "px," + ty.toFixed(2) + "px) scale(" + (a * s).toFixed(5) + ")";
+        };
+      }
+
+      const paintTear = tearKit("s2", T, 0x2031b3);
+      // Arrives as tear 1 starts to open (global 8.975).
+      const paintCam = camKit(document.getElementById("s2-cam"), P, COUNTER, L(28), T, L(20) - 0.4);
+
+      const tl = gsap.timeline({
+        paused: true,
+        onUpdate() {
+          paintCam(this.time());
+          paintTear(this.time());
+        },
+      });
+
+      // Pen: 0.18 s per character, 0.12 s apart.
+      const WIPE_FROM = "inset(-20% 100% -20% -20%)", WIPE_TO = "inset(-20% -20% -20% -20%)";
+      const chars = document.querySelectorAll("#s2-l1 .ch");
+      tl.fromTo(chars[0], { clipPath: WIPE_FROM }, { clipPath: WIPE_TO, duration: 0.18, ease: "power1.inOut" }, L(21));
+      for (let i = 1; i < chars.length; i++) {
+        tl.fromTo(chars[i], { clipPath: WIPE_FROM }, { clipPath: WIPE_TO, duration: 0.18, ease: "power1.inOut" }, L(22) + (i - 1) * 0.12);
+      }
+      tl.fromTo("#s2-ul-path", { attr: { "stroke-dashoffset": 110 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power2.inOut" }, L(25));
+      document.querySelectorAll("#s2-memo .ch").forEach((el, i) => {
+        tl.fromTo(el, { clipPath: WIPE_FROM }, { clipPath: WIPE_TO, duration: 0.16, ease: "power1.inOut" }, L(27) + i * 0.1);
+      });
+      tl.to({}, { duration: 6.8 }, 0);
+      paintCam(0);
+      paintTear(0);
+      window.__timelines["s2-kraft"] = tl;
+    })();
+  </script>
+</template>

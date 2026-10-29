@@ -1,0 +1,12 @@
+# local tooling
+/.venv/
+/node_modules/
+/package.json
+/package-lock.json
+node_modules/
+
+# HyperFrames caches and run artifacts
+film/.hyperframes/
+film/.thumbnails/
+film/.waveform-cache/
+__pycache__/

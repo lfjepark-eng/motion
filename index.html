@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>종이 한 장 — 10월 키네틱 타이포</title>
+    <meta name="description" content="10월의 고요한 아침을 찢는 30초 키네틱 타이포그래피 모션." />
+    <meta property="og:title" content="종이 한 장" />
+    <meta property="og:image" content="film/renders/poster.jpg" />
+    <style>
+      @font-face {
+        font-family: "Pretendard Black";
+        src: url("film/assets/fonts/Pretendard-Black.otf");
+        font-display: swap;
+      }
+      :root {
+        --paper: #ece9e1;
+        --ink: #1e1c19;
+        --muted: #6b665d;
+        --accent: #ff4f1a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper) url("film/assets/paper/hanji.jpg") center / cover fixed;
+        color: var(--ink);
+        font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: clamp(32px, 6vw, 72px) 16px 56px;
+      }
+      h1 {
+        font-family: "Pretendard Black", sans-serif;
+        font-size: clamp(48px, 9vw, 112px);
+        line-height: 1;
+        letter-spacing: -0.04em;
+        margin: 0 0 12px;
+      }
+      .lede {
+        font-size: clamp(17px, 2vw, 21px);
+        margin: 0 0 32px;
+        max-width: 40em;
+      }
+      video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #0f0f0f;
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 24px;
+        margin: 16px 0 40px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .layers {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 0;
+        border-top: 2px solid var(--ink);
+        margin: 0 0 40px;
+        padding: 0;
+        list-style: none;
+      }
+      .layers li {
+        padding: 16px 16px 16px 0;
+        border-bottom: 1px solid rgba(30, 28, 25, 0.25);
+      }
+      .layers b {
+        display: block;
+        font-size: 18px;
+      }
+      .layers span {
+        color: var(--muted);
+        font-size: 15px;
+      }
+      a {
+        color: var(--ink);
+        text-decoration-color: var(--accent);
+        text-decoration-thickness: 3px;
+        text-underline-offset: 4px;
+      }
+      footer {
+        color: var(--muted);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>종이 한 장</h1>
+      <p class="lede">10월의 고요한 아침이 종이 네 장을 뚫고 찢어지며 깨어난다. 글자의 ㅇ 속으로 파고들면, 그 자리에서 종이가 찢긴다.</p>
+      <video controls playsinline preload="metadata" poster="film/renders/poster.jpg">
+        <source src="film/renders/october-paper.mp4" type="video/mp4" />
+      </video>
+      <div class="meta">
+        <span>30초 · 1920×1080 · 30fps</span>
+        <span>128 BPM · D 단조 · 16마디</span>
+        <span>HyperFrames로 렌더</span>
+        <a href="film/renders/october-paper.mp4" download>MP4 내려받기</a>
+      </div>
+      <ul class="layers">
+        <li><b>한지 · 붓</b><span>시월, 아무 소리도 없는 아침</span></li>
+        <li><b>크라프트 · 펜</b><span>그 고요를</span></li>
+        <li><b>신문지 · 활자</b><span>찢어 — 오전 7시, 정적이 깨졌다</span></li>
+        <li><b>형광 포스터</b><span>깨 · 어 · 나</span></li>
+      </ul>
+      <footer>
+        폰트: 나눔붓·나눔펜(NAVER), Noto Serif KR(Adobe/Google), Pretendard — 모두 SIL OFL 1.1.
+        효과음 일부: Pixabay Content License. 음악은 직접 합성.
+      </footer>
+    </main>
+  </body>
+</html>
